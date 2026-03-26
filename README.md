@@ -61,8 +61,8 @@ Proyecto1_Dispro/
 
 - **Lenguaje:** C (ANSI C)
 - **PC:** Compilado con GCC (consola Windows/Linux)
-- **Embebido:** ATmega328P (stand-alone, cristal 16 MHz)
-- **Hardware:** Matrices LED 8×8, registros de desplazamiento 74HC595, protoboard
+- **Embebido:** ATmega328P (Por ahora ARDUINO UNO)
+- **Hardware:** Matrices LED 8×8, registros de desplazamiento 74HC595
 
 ## Cómo Compilar
 ### Versión PC (Hito 1)
