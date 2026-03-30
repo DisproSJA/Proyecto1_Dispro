@@ -31,7 +31,8 @@ static void dibujarPiezaActiva( const EstadoJuego *juego,
                                 uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO] );
 static bool filaCompleta( const EstadoJuego *juego, uint8_t fila );
 static void bajarFilasSuperiores( EstadoJuego *juego, uint8_t filaEliminada );
-static void actualizarPuntajePorLineas( EstadoJuego *juego, uint8_t lineasEliminadas );
+static void actualizarPuntajePorPiezas( EstadoJuego *juego );
+static bool piezaFijadaTocaPrimeraFila( const EstadoJuego *juego );
 
 void
 tetris_inicializarJuego( EstadoJuego *juego )
@@ -39,6 +40,7 @@ tetris_inicializarJuego( EstadoJuego *juego )
     tetris_reiniciarTablero( juego );
     juego->puntaje = 0;
     juego->lineasCompletas = 0;
+    juego->piezasColocadas = 0;
     juego->gameOver = false;
     tetris_generarPiezaInicial( juego );
 }
@@ -185,6 +187,9 @@ tetris_fijarPiezaActiva( EstadoJuego *juego )
             }
         }
     }
+
+    juego->piezasColocadas++;
+    actualizarPuntajePorPiezas( juego );
 }
 
 bool
@@ -230,11 +235,15 @@ tetris_bajarOFijar( EstadoJuego *juego )
 
     tetris_fijarPiezaActiva( juego );
 
+    if( piezaFijadaTocaPrimeraFila( juego ) ) {
+        juego->gameOver = true;
+        return false;
+    }
+
     lineasEliminadas = tetris_eliminarLineasCompletas( juego );
     if( lineasEliminadas > 0U ) {
         juego->lineasCompletas =
             (uint16_t)( juego->lineasCompletas + lineasEliminadas );
-        actualizarPuntajePorLineas( juego, lineasEliminadas );
     }
 
     return tetris_generarNuevaPieza( juego );
@@ -303,6 +312,10 @@ dibujarPiezaActiva(
     uint8_t fila;
     uint8_t col;
 
+    if( juego->gameOver ) {
+        return;
+    }
+
     for( fila = 0; fila < 4; fila++ ) {
         for( col = 0; col < 4; col++ ) {
             int8_t xTablero;
@@ -359,22 +372,22 @@ bajarFilasSuperiores( EstadoJuego *juego, uint8_t filaEliminada )
 }
 
 static void
-actualizarPuntajePorLineas( EstadoJuego *juego, uint8_t lineasEliminadas )
+actualizarPuntajePorPiezas( EstadoJuego *juego )
 {
-    switch( lineasEliminadas ) {
-        case 1:
-            juego->puntaje = (uint16_t)( juego->puntaje + 100U );
-            break;
-        case 2:
-            juego->puntaje = (uint16_t)( juego->puntaje + 300U );
-            break;
-        case 3:
-            juego->puntaje = (uint16_t)( juego->puntaje + 500U );
-            break;
-        case 4:
-            juego->puntaje = (uint16_t)( juego->puntaje + 800U );
-            break;
-        default:
-            break;
-    }
+    juego->puntaje = (uint16_t)( ( juego->piezasColocadas / 10U ) * 10U );
 }
+
+static bool
+piezaFijadaTocaPrimeraFila( const EstadoJuego *juego )
+{
+    uint8_t col;
+
+    for( col = 0; col < ANCHO_TABLERO; col++ ) {
+        if( juego->tableroFijo.celdas[0][col] != 0U ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+

@@ -1,5 +1,6 @@
 #include "src/tetris/tetris_logic.h"
 #include "src/drivers/driver_avr.h"
+#include "src/ui/ui_display.h"
 
 /* -------------------------- Estado global -------------------------- */
 static EstadoJuego juego;
@@ -15,14 +16,14 @@ static bool btnRotAnterior = false;
 static bool btnBajAnterior = false;
 
 /* Temporización de caída automática */
-
 static unsigned long ultimoDescensoMs = 0;
 static const unsigned long INTERVALO_CAIDA_MS = 3000UL;
 
 /* ---------------------- Prototipos privados ------------------------ */
 static void procesarEntradas( void );
-static void actualizarFramebuffer( void );
 static void procesarCaidaAutomatica( void );
+static void actualizarFramebuffer( void );
+static void intentarReiniciarJuego( void );
 
 void
 setup( void )
@@ -60,6 +61,8 @@ static void
 procesarEntradas( void )
 {
     if( juego.gameOver ) {
+        intentarReiniciarJuego( );
+
         btnIzqAnterior = botones.izq;
         btnDerAnterior = botones.der;
         btnRotAnterior = botones.rot;
@@ -69,23 +72,14 @@ procesarEntradas( void )
 
     if( botones.izq && !btnIzqAnterior ) {
         tetris_intentarMover( &juego, -1, 0 );
-        actualizarFramebuffer( );
     }
 
     if( botones.der && !btnDerAnterior ) {
         tetris_intentarMover( &juego, 1, 0 );
-        actualizarFramebuffer( );
     }
 
     if( botones.rot && !btnRotAnterior ) {
         tetris_intentarRotar( &juego );
-        actualizarFramebuffer( );
-    }
-
-    if( botones.baj && !btnBajAnterior ) {
-        tetris_bajarOFijar( &juego );
-        actualizarFramebuffer( );
-        ultimoDescensoMs = millis( );
     }
 
     btnIzqAnterior = botones.izq;
@@ -112,5 +106,19 @@ procesarCaidaAutomatica( void )
 static void
 actualizarFramebuffer( void )
 {
+    if( juego.gameOver ) {
+        ui_dibujarPantallaGameOver( &juego, framebuffer );
+        return;
+    }
+
     tetris_dibujarEstadoEnFramebuffer( &juego, framebuffer );
+}
+
+static void
+intentarReiniciarJuego( void )
+{
+    if( botones.rot && botones.baj ) {
+        tetris_inicializarJuego( &juego );
+        ultimoDescensoMs = millis( );
+    }
 }
