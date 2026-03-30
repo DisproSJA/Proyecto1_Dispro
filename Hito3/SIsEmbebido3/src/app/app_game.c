@@ -1,18 +1,17 @@
 #include "app_game.h"
 #include "../tetris/tetris_logic.h"
 #include "../ui/ui_display.h"
-#include <Arduino.h>
 
 static bool btnIzqAnterior = false;
 static bool btnDerAnterior = false;
 static bool btnRotAnterior = false;
 static bool btnBajAnterior = false;
 
-static unsigned long ultimoDescensoMs = 0;
-static const unsigned long INTERVALO_CAIDA_MS = 3500UL;
+static uint32_t ultimoDescensoMs = 0;
+static const uint32_t INTERVALO_CAIDA_MS = 3000UL;
 
-static unsigned long ultimoSoftDropMs = 0;
-static const unsigned long INTERVALO_SOFT_DROP_MS = 250UL;
+static uint32_t ultimoSoftDropMs = 0;
+static const uint32_t INTERVALO_SOFT_DROP_MS = 180UL;
 
 static void procesarEntradas( EstadoJuego *juego, const BotonesEstado *botones );
 static void procesarCaidaAutomatica( EstadoJuego *juego );
@@ -43,8 +42,8 @@ app_game_init( EstadoJuego *juego,
     tetris_inicializarJuego( juego );
     actualizarFramebuffer( juego, framebuffer );
 
-    ultimoDescensoMs = millis( );
-    ultimoSoftDropMs = millis( );
+    ultimoDescensoMs = driver_avr_get_millis( );
+    ultimoSoftDropMs = driver_avr_get_millis( );
 }
 
 void
@@ -53,7 +52,7 @@ app_game_update( EstadoJuego *juego,
                  BotonesEstado *botones,
                  uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO] )
 {
-    driver_avr_actualizarBotones( debounce, botones, millis( ) );
+    driver_avr_actualizarBotones( debounce, botones, driver_avr_get_millis( ) );
 
     procesarEntradas( juego, botones );
     procesarCaidaAutomatica( juego );
@@ -63,7 +62,7 @@ app_game_update( EstadoJuego *juego,
 static void
 procesarEntradas( EstadoJuego *juego, const BotonesEstado *botones )
 {
-    unsigned long tiempoActual = millis( );
+    uint32_t tiempoActual = driver_avr_get_millis( );
 
     if( juego->gameOver ) {
         intentarReiniciarJuego( juego, botones );
@@ -110,7 +109,7 @@ procesarEntradas( EstadoJuego *juego, const BotonesEstado *botones )
 static void
 procesarCaidaAutomatica( EstadoJuego *juego )
 {
-    unsigned long tiempoActual = millis( );
+    uint32_t tiempoActual = driver_avr_get_millis( );
 
     if( juego->gameOver ) {
         return;
@@ -139,7 +138,7 @@ intentarReiniciarJuego( EstadoJuego *juego, const BotonesEstado *botones )
 {
     if( botones->rot && botones->baj ) {
         tetris_inicializarJuego( juego );
-        ultimoDescensoMs = millis( );
-        ultimoSoftDropMs = millis( );
+        ultimoDescensoMs = driver_avr_get_millis( );
+        ultimoSoftDropMs = driver_avr_get_millis( );
     }
 }

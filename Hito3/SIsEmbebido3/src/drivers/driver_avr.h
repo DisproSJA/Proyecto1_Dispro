@@ -32,7 +32,7 @@ extern "C" {
     typedef struct {
         uint8_t estableActual;
         uint8_t ultimaLectura;
-        unsigned long ultimoCambioMs;
+        uint32_t ultimoCambioMs;
     } DebounceBotones;
 
     void driver_avr_inicializarHardware( void );
@@ -45,7 +45,10 @@ extern "C" {
 
     void driver_avr_actualizarBotones( DebounceBotones *debounce,
                                        BotonesEstado *botones,
-                                       unsigned long tiempoActualMs );
+                                       uint32_t tiempoActualMs );
+
+    uint32_t driver_avr_get_millis( void );
+    void driver_avr_delay_us( uint16_t tiempoUs );
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#ifndef F_CPU
+#define F_CPU 16000000UL
+#endif
+
 #define PLATFORM_AVR
 
 #define ANCHO_TABLERO  8
