@@ -38,7 +38,13 @@ Proyecto1_Dispro/
 │
 └── EntregaFinal/                   # Entrega Final - Sistema Tetris Completo
     ├── SisComputador/               # (Pendiente)
-    └── SisEmbebido/                 # (Pendiente)
+    └── SisEmbebido/
+        └── src/
+        │    └── app/
+        │    └── drivers/
+        │    └── tetris/
+        │    └── ui/
+        └── SisEmbebido3.ino/                 
 ```
 
 ## Hitos del Proyecto
