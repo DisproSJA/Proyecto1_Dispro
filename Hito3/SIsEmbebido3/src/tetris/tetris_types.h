@@ -26,6 +26,7 @@ typedef struct {
     PiezaActiva piezaActiva;
     uint16_t puntaje;
     uint16_t lineasCompletas;
+    uint16_t piezasColocadas;
     bool gameOver;
 } EstadoJuego;
 

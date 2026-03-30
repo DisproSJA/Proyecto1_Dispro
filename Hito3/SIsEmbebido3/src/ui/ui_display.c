@@ -1,18 +1,16 @@
 #include "ui_display.h"
 
-
-
 static const uint8_t DIGITOS_3X5[10][5] = {
-    { 0b111, 0b101, 0b101, 0b101, 0b111 }, /* 0 */
-    { 0b010, 0b110, 0b010, 0b010, 0b111 }, /* 1 */
-    { 0b111, 0b001, 0b111, 0b100, 0b111 }, /* 2 */
-    { 0b111, 0b001, 0b111, 0b001, 0b111 }, /* 3 */
-    { 0b101, 0b101, 0b111, 0b001, 0b001 }, /* 4 */
-    { 0b111, 0b100, 0b111, 0b001, 0b111 }, /* 5 */
-    { 0b111, 0b100, 0b111, 0b101, 0b111 }, /* 6 */
-    { 0b111, 0b001, 0b001, 0b001, 0b001 }, /* 7 */
-    { 0b111, 0b101, 0b111, 0b101, 0b111 }, /* 8 */
-    { 0b111, 0b101, 0b111, 0b001, 0b111 }  /* 9 */
+    { 0b111, 0b101, 0b101, 0b101, 0b111 },
+    { 0b010, 0b110, 0b010, 0b010, 0b111 },
+    { 0b111, 0b001, 0b111, 0b100, 0b111 },
+    { 0b111, 0b001, 0b111, 0b001, 0b111 },
+    { 0b101, 0b101, 0b111, 0b001, 0b001 },
+    { 0b111, 0b100, 0b111, 0b001, 0b111 },
+    { 0b111, 0b100, 0b111, 0b101, 0b111 },
+    { 0b111, 0b001, 0b001, 0b001, 0b001 },
+    { 0b111, 0b101, 0b111, 0b101, 0b111 },
+    { 0b111, 0b101, 0b111, 0b001, 0b111 }
 };
 
 static void dibujarNumeroDosDigitosEnMatriz(
@@ -25,6 +23,11 @@ static void dibujarDigito3x5(
     uint8_t filaBase,
     uint8_t colBase,
     uint8_t digito );
+
+static void escribirPixelEspejado(
+    uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO],
+    uint8_t fila,
+    uint8_t col );
 
 void
 ui_limpiarFramebuffer(
@@ -84,9 +87,21 @@ dibujarDigito3x5(
     for( fila = 0; fila < 5; fila++ ) {
         for( col = 0; col < 3; col++ ) {
             if( DIGITOS_3X5[digito][fila] & ( 1U << ( 2U - col ) ) ) {
-                framebuffer[filaBase + fila][colBase + col] = 1;
+                escribirPixelEspejado(
+                    framebuffer,
+                    (uint8_t)( filaBase + fila ),
+                    (uint8_t)( colBase + col ) );
             }
         }
     }
 }
 
+static void
+escribirPixelEspejado(
+    uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO],
+    uint8_t fila,
+    uint8_t col )
+{
+    uint8_t colEspejada = (uint8_t)( 7U - col );
+    framebuffer[fila][colEspejada] = 1;
+}

@@ -32,7 +32,6 @@ static void dibujarPiezaActiva( const EstadoJuego *juego,
 static bool filaCompleta( const EstadoJuego *juego, uint8_t fila );
 static void bajarFilasSuperiores( EstadoJuego *juego, uint8_t filaEliminada );
 static void actualizarPuntajePorPiezas( EstadoJuego *juego );
-static bool piezaFijadaTocaPrimeraFila( const EstadoJuego *juego );
 
 void
 tetris_inicializarJuego( EstadoJuego *juego )
@@ -235,7 +234,7 @@ tetris_bajarOFijar( EstadoJuego *juego )
 
     tetris_fijarPiezaActiva( juego );
 
-    if( piezaFijadaTocaPrimeraFila( juego ) ) {
+    if( tetris_hayBloquesEnFilaSuperior( juego ) ) {
         juego->gameOver = true;
         return false;
     }
@@ -264,6 +263,20 @@ tetris_eliminarLineasCompletas( EstadoJuego *juego )
     }
 
     return eliminadas;
+}
+
+bool
+tetris_hayBloquesEnFilaSuperior( const EstadoJuego *juego )
+{
+    uint8_t col;
+
+    for( col = 0; col < ANCHO_TABLERO; col++ ) {
+        if( juego->tableroFijo.celdas[0][col] != 0U ) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void
@@ -376,18 +389,3 @@ actualizarPuntajePorPiezas( EstadoJuego *juego )
 {
     juego->puntaje = (uint16_t)( ( juego->piezasColocadas / 10U ) * 10U );
 }
-
-static bool
-piezaFijadaTocaPrimeraFila( const EstadoJuego *juego )
-{
-    uint8_t col;
-
-    for( col = 0; col < ANCHO_TABLERO; col++ ) {
-        if( juego->tableroFijo.celdas[0][col] != 0U ) {
-            return true;
-        }
-    }
-
-    return false;
-}
-

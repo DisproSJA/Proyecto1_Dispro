@@ -30,6 +30,7 @@ extern "C" {
     bool tetris_bajarOFijar( EstadoJuego *juego );
 
     uint8_t tetris_eliminarLineasCompletas( EstadoJuego *juego );
+    bool tetris_hayBloquesEnFilaSuperior( const EstadoJuego *juego );
 
     void tetris_dibujarEstadoEnFramebuffer(
         const EstadoJuego *juego,
