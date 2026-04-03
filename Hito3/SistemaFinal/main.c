@@ -93,7 +93,19 @@ int main( void )
     while( g_juegoActivo ) {
         procesarEntrada();
         actualizarCaidaAutomatica();
+
+#ifdef PLATFORM_AVR
+        /* En AVR, si es game over se muestran los digitos en las matrices */
+        if( g_juego.gameOver ) {
+            tetris_dibujarPantallaGameOver( &g_juego, g_framebuffer );
+        } else {
+            tetris_dibujarEstadoEnFramebuffer( &g_juego, g_framebuffer );
+        }
+#else
+        /* En PC, el panel lateral ya muestra la info de game over */
         tetris_dibujarEstadoEnFramebuffer( &g_juego, g_framebuffer );
+#endif
+
         hal_dibujarJuego( &g_juego, g_framebuffer );
         hal_retardo( RETARDO_CICLO_MS );
     }

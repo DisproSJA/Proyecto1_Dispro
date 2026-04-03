@@ -56,8 +56,6 @@ static void bajarFilasSuperiores( EstadoJuego *juego, uint8_t filaEliminada );
 
 static void actualizarPuntajePorPiezas( EstadoJuego *juego );
 
-static void actualizarPuntajePorLineas( EstadoJuego *juego, uint8_t lineas );
-
 /******************************************************************************
  * IMPLEMENTACION DE FUNCIONES PUBLICAS
  ******************************************************************************/
@@ -428,7 +426,6 @@ bool tetris_bajarOFijar( EstadoJuego *juego )
     if( lineasEliminadas > 0U ) {
         juego->lineasCompletas =
             (uint16_t)( juego->lineasCompletas + lineasEliminadas );
-        actualizarPuntajePorLineas( juego, lineasEliminadas );
     }
 
     return tetris_generarNuevaPieza( juego );
@@ -714,16 +711,48 @@ static void bajarFilasSuperiores( EstadoJuego *juego, uint8_t filaEliminada )
 *******************************************************************************/
 static void actualizarPuntajePorPiezas( EstadoJuego *juego )
 {
-    juego->puntaje = (uint16_t)( juego->puntaje + 10U );
+    juego->puntaje = (uint16_t)( ( juego->piezasColocadas / 10U ) * 10U );
 }
+
+/******************************************************************************
+ * PANTALLA DE GAME OVER PARA MATRICES LED
+ *
+ * Cuando el juego termina, se muestran dos numeros de dos digitos en las
+ * matrices LED usando sprites de 3x5 pixeles:
+ *   - Matriz superior (filas 0-7):  cantidad de piezas colocadas
+ *   - Matriz inferior (filas 8-15): puntaje obtenido
+ ******************************************************************************/
+
+/* Sprites de los digitos 0-9 en formato 3x5 pixeles (3 columnas, 5 filas) */
+static const uint8_t DIGITOS_3X5[10][5] = {
+    { 0x07, 0x05, 0x05, 0x05, 0x07 },   /* 0 */
+    { 0x02, 0x06, 0x02, 0x02, 0x07 },   /* 1 */
+    { 0x07, 0x01, 0x07, 0x04, 0x07 },   /* 2 */
+    { 0x07, 0x01, 0x07, 0x01, 0x07 },   /* 3 */
+    { 0x05, 0x05, 0x07, 0x01, 0x01 },   /* 4 */
+    { 0x07, 0x04, 0x07, 0x01, 0x07 },   /* 5 */
+    { 0x07, 0x04, 0x07, 0x05, 0x07 },   /* 6 */
+    { 0x07, 0x01, 0x01, 0x01, 0x01 },   /* 7 */
+    { 0x07, 0x05, 0x07, 0x05, 0x07 },   /* 8 */
+    { 0x07, 0x05, 0x07, 0x01, 0x07 }    /* 9 */
+};
+
+static void dibujarDigito3x5(
+    uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO],
+    uint8_t filaBase, uint8_t colBase, uint8_t digito );
+
+static void dibujarNumeroDosDigitos(
+    uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO],
+    uint8_t filaInicio, uint8_t valor );
 
 /*FN****************************************************************************
 *
-*   static void actualizarPuntajePorLineas( juego, lineas )
+*   void tetris_dibujarPantallaGameOver( juego, framebuffer )
 *
-*   Que hace:  Suma puntos de bonificacion segun cuantas lineas se
-*              eliminaron de una vez. El sistema clasico de Tetris da:
-*              1 linea = 100 pts, 2 = 300 pts, 3 = 500 pts, 4 = 800 pts.
+*   Que hace:  Dibuja la pantalla de fin de juego en el framebuffer para
+*              las matrices LED. Limpia el framebuffer y muestra dos numeros:
+*              arriba la cantidad de piezas colocadas (modulo 100) y abajo
+*              el puntaje obtenido (modulo 100), usando sprites de 3x5.
 *
 *   Retorna:   Nada
 *
@@ -731,15 +760,92 @@ static void actualizarPuntajePorPiezas( EstadoJuego *juego )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo   
-*   ABR 02/26      Juan Sanchez
+*   ABR 02/26      Andres Felipe Trujillo
 *******************************************************************************/
-static void actualizarPuntajePorLineas( EstadoJuego *juego, uint8_t lineas )
+void tetris_dibujarPantallaGameOver(
+    const EstadoJuego *juego,
+    uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO] )
 {
-    static const uint16_t bonusPorLineas[] = { 0, 100, 300, 500, 800 };
+    uint8_t fila;
+    uint8_t col;
 
-    if( lineas >= 1 && lineas <= 4 ) {
-        juego->puntaje =
-            (uint16_t)( juego->puntaje + bonusPorLineas[lineas] );
+    /* Limpiar el framebuffer completo */
+    for( fila = 0; fila < ALTO_TABLERO; fila++ ) {
+        for( col = 0; col < ANCHO_TABLERO; col++ ) {
+            framebuffer[fila][col] = 0;
+        }
+    }
+
+    /* Matriz superior: piezas colocadas (2 digitos) */
+    dibujarNumeroDosDigitos( framebuffer, 0,
+        (uint8_t)( juego->piezasColocadas % 100U ) );
+
+    /* Matriz inferior: puntaje (2 digitos) */
+    dibujarNumeroDosDigitos( framebuffer, 8,
+        (uint8_t)( juego->puntaje % 100U ) );
+}
+
+/*FN****************************************************************************
+*
+*   static void dibujarNumeroDosDigitos( framebuffer, filaInicio, valor )
+*
+*   Que hace:  Dibuja un numero de dos digitos (00-99) en una de las dos
+*              matrices LED. Separa el valor en decenas y unidades y dibuja
+*              cada digito con el sprite de 3x5 correspondiente.
+*
+*   Retorna:   Nada
+*
+*   Registro Revisiones:
+*
+*   FECHA          RESPONSABLE
+*   -----------------------------------------------------------------------
+*   ABR 02/26      Andres Felipe Trujillo
+*******************************************************************************/
+static void dibujarNumeroDosDigitos(
+    uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO],
+    uint8_t filaInicio,
+    uint8_t valor )
+{
+    uint8_t decenas  = (uint8_t)( valor / 10U );
+    uint8_t unidades = (uint8_t)( valor % 10U );
+
+    dibujarDigito3x5( framebuffer, filaInicio + 1U, 1U, decenas );
+    dibujarDigito3x5( framebuffer, filaInicio + 1U, 5U, unidades );
+}
+
+/*FN****************************************************************************
+*
+*   static void dibujarDigito3x5( framebuffer, filaBase, colBase, digito )
+*
+*   Que hace:  Dibuja un digito (0-9) en el framebuffer usando su sprite
+*              de 3 columnas por 5 filas. Los pixeles se espejan
+*              horizontalmente para coincidir con el cableado fisico
+*              de las matrices LED.
+*
+*   Retorna:   Nada
+*
+*   Registro Revisiones:
+*
+*   FECHA          RESPONSABLE
+*   -----------------------------------------------------------------------
+*   ABR 02/26      Andres Felipe Trujillo
+*******************************************************************************/
+static void dibujarDigito3x5(
+    uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO],
+    uint8_t filaBase,
+    uint8_t colBase,
+    uint8_t digito )
+{
+    uint8_t fila;
+    uint8_t col;
+    uint8_t colEspejada;
+
+    for( fila = 0; fila < 5; fila++ ) {
+        for( col = 0; col < 3; col++ ) {
+            if( DIGITOS_3X5[digito][fila] & ( 1U << ( 2U - col ) ) ) {
+                colEspejada = (uint8_t)( 7U - ( colBase + col ) );
+                framebuffer[filaBase + fila][colEspejada] = 1;
+            }
+        }
     }
 }

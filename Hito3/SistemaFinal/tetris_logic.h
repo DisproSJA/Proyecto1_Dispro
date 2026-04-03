@@ -106,4 +106,8 @@ void tetris_dibujarEstadoEnFramebuffer(
     const EstadoJuego *juego,
     uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO] );
 
+void tetris_dibujarPantallaGameOver(
+    const EstadoJuego *juego,
+    uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO] );
+
 #endif
