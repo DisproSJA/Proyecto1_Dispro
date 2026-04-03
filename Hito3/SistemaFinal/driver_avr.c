@@ -50,9 +50,9 @@
  ******************************************************************************/
 
 #define BTN_ROT_BIT    PD2
-#define BTN_IZQ_BIT    PD3
+#define BTN_IZQ_BIT    PD5
 #define BTN_BAJ_BIT    PD4
-#define BTN_DER_BIT    PD5
+#define BTN_DER_BIT    PD3
 
 #define DATA_BIT       PD6
 #define RESET595_BIT   PD7
