@@ -172,4 +172,13 @@ avrdude -c stk500v1 -p m328p -P <PUERTO> -b 19200 -U flash:w:tetris.hex
 > - **Mac:** `/dev/cu.usbmodemXXXXX` (buscar con `ls /dev/cu.usbmodem*`)
 > - **Windows:** `COMX` (verificar en el Administrador de Dispositivos)
 >
-> El Arduino UNO debe tener cargado el sketch **ArduinoISP** y estar conectado al ATmega328P por los pines MOSI, MISO, SCK y RESET.
+> El Arduino UNO debe tener cargado el sketch **ArduinoISP** y estar conectado al ATmega328P según la siguiente tabla:
+>
+> | Arduino UNO | ATmega328P (DIP-28)       |
+> |-------------|---------------------------|
+> | Pin 13 (SCK)  | Pin 19 (PB5 / SCK)     |
+> | Pin 12 (MISO) | Pin 18 (PB4 / MISO)    |
+> | Pin 11 (MOSI) | Pin 17 (PB3 / MOSI)    |
+> | Pin 10         | Pin 1  (RESET)          |
+> | 5V             | Pin 7 (VCC) y Pin 20 (AVCC) |
+> | GND            | Pin 8 (GND) y Pin 22 (GND)  |
