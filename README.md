@@ -84,7 +84,7 @@ El circuito base incluye:
 - **Pin 9 (XTAL1)** y **Pin 10 (XTAL2):** Cristal de 16 MHz con dos capacitores de 22pF a GND.
 - **Capacitor de desacoplo:** 10µF (o 0.1µF cerámico) entre +5V y GND, cerca del chip.
 
-### Botones (Puerto D — entrada con pull-up externo a +5V)
+### Botones
 
 | Pin ATmega328P | Puerto | Función       |
 |----------------|--------|---------------|
@@ -92,8 +92,6 @@ El circuito base incluye:
 | Pin 5          | PD3    | Botón IZQUIERDA |
 | Pin 6          | PD4    | Botón BAJAR   |
 | Pin 11         | PD5    | Botón DERECHA |
-
-> El otro lado de cada botón va a +5V.
 
 ### 74HC595 — Control de Matrices LED
 
