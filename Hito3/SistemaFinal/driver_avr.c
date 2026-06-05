@@ -65,28 +65,28 @@
  * CONSTANTES DEL DRIVER
  ******************************************************************************/
 
-#define DEBOUNCE_MS      40U    /* Tiempo de antirebote para botones    */
-#define RETARDO_FILA_US  200U   /* Tiempo que cada fila del LED queda encendida */
-#define REPETIR_BAJAR_MS 180U   /* Intervalo de auto-repeticion al mantener
-                                   presionado el boton de bajar            */
+#define DEBOUNCE_MS      40U    // Tiempo de antirebote para botones   
+#define RETARDO_FILA_US  200U   // Tiempo que cada fila del LED queda encendida
+#define REPETIR_BAJAR_MS 180U   // Intervalo de auto-repeticion al mantener
+                                // presionado el boton de bajar           
 
 /******************************************************************************
  * VARIABLES GLOBALES DEL DRIVER
  ******************************************************************************/
 
-/* Contador de milisegundos incrementado por la ISR del Timer0 */
+// Contador de milisegundos incrementado por la ISR del Timer0
 static volatile uint32_t g_millis = 0;
 
-/* Estado del antirebote de los 4 botones */
+// Estado del antirebote de los 4 botones
 static uint8_t  g_botonesEstable   = 0;
 static uint8_t  g_botonesAnterior  = 0;
 static uint8_t  g_ultimaLectura    = 0;
 static uint32_t g_ultimoCambioMs   = 0;
 
-/* Para repetir la accion de bajar mientras se mantiene el boton */
+// Para repetir la accion de bajar mientras se mantiene el boton
 static uint32_t g_ultimoBajarMs    = 0;
 
-/* Para detectar el combo de reiniciar (Rotar + Bajar) */
+// Para detectar el combo de reiniciar (Rotar + Bajar)
 static uint8_t  g_comboReiniciar   = 0;
 
 /******************************************************************************
@@ -143,17 +143,19 @@ ISR( TIMER0_COMPA_vect )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 int hal_inicializarHardware( void )
 {
     cli();
 
-    /* Pines de los 74HC595 como salida */
+    // Pines de los 74HC595 como salida
     DDRD |= ( 1U << DATA_BIT ) | ( 1U << RESET595_BIT );
     DDRB |= ( 1U << CLOCK_BIT ) | ( 1U << LATCH_BIT ) | ( 1U << OE_BIT );
 
-    /* Pines de botones como entrada, sin pull-up */
+    // Pines de botones como entrada, sin pull-up
     DDRD &= ~( ( 1U << BTN_ROT_BIT ) |
                ( 1U << BTN_IZQ_BIT ) |
                ( 1U << BTN_BAJ_BIT ) |
@@ -164,21 +166,21 @@ int hal_inicializarHardware( void )
                 ( 1U << BTN_BAJ_BIT ) |
                 ( 1U << BTN_DER_BIT ) );
 
-    /* Estado inicial de los pines de control */
+    // Estado inicial de los pines de control  
     PORTD &= ~( 1U << DATA_BIT );
     PORTB &= ~( 1U << CLOCK_BIT );
     PORTB &= ~( 1U << LATCH_BIT );
 
-    /* OE en alto (display apagado temporalmente) */
+    // OE en alto (display apagado temporalmente)  
     PORTB |= ( 1U << OE_BIT );
 
-    /* RESET de los 595 en alto (operacion normal) */
+    // RESET de los 595 en alto (operacion normal)  
     PORTD |= ( 1U << RESET595_BIT );
 
-    /* Arrancar Timer0 para contar milisegundos */
+    // Arrancar Timer0 para contar milisegundos  
     inicializarTimer0();
 
-    /* Apagar todas las matrices y habilitar la salida */
+    // Apagar todas las matrices y habilitar la salida  
     apagarMatrices();
     PORTB &= ~( 1U << OE_BIT );
 
@@ -201,7 +203,9 @@ int hal_inicializarHardware( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 void
 hal_finalizarHardware( void )
@@ -226,7 +230,9 @@ hal_finalizarHardware( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 int
 hal_leerEntrada( void )
@@ -237,11 +243,11 @@ hal_leerEntrada( void )
     ahora = obtenerMillis();
     actualizarDebounce( ahora );
 
-    /* Detectar flancos de subida (boton recien presionado) */
+    // Detectar flancos de subida (boton recien presionado)  
     flancoSubida = g_botonesEstable & ~g_botonesAnterior;
     g_botonesAnterior = g_botonesEstable;
 
-    /* Combo de reinicio: Rotar + Bajar presionados al mismo tiempo */
+    // Combo de reinicio: Rotar + Bajar presionados al mismo tiempo  
     if( ( g_botonesEstable & ( 1U << 2 ) ) &&
         ( g_botonesEstable & ( 1U << 3 ) ) ) {
         if( !g_comboReiniciar ) {
@@ -252,7 +258,7 @@ hal_leerEntrada( void )
     }
     g_comboReiniciar = 0;
 
-    /* Flancos individuales de cada boton */
+    // Flancos individuales de cada boton  
     if( flancoSubida & ( 1U << 0 ) ) {
         return ENTRADA_IZQUIERDA;
     }
@@ -270,7 +276,7 @@ hal_leerEntrada( void )
         return ENTRADA_BAJAR;
     }
 
-    /* Repeticion al mantener presionado el boton de bajar */
+    // Repeticion al mantener presionado el boton de bajar  
     if( g_botonesEstable & ( 1U << 3 ) ) {
         if( ( ahora - g_ultimoBajarMs ) >= REPETIR_BAJAR_MS ) {
             g_ultimoBajarMs = ahora;
@@ -295,7 +301,9 @@ hal_leerEntrada( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 long
 hal_obtenerTiempoMs( void )
@@ -326,7 +334,9 @@ hal_obtenerTiempoMs( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 void
 hal_retardo( int milisegundos )
@@ -351,7 +361,9 @@ hal_retardo( int milisegundos )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 void
 hal_dibujarJuego( const EstadoJuego *juego,
@@ -400,7 +412,9 @@ hal_dibujarJuego( const EstadoJuego *juego,
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 static void
 inicializarTimer0( void )
@@ -409,16 +423,16 @@ inicializarTimer0( void )
     TCCR0B = 0;
     TCNT0  = 0;
 
-    /* Modo CTC (Clear Timer on Compare Match) */
+    // Modo CTC (Clear Timer on Compare Match)  
     TCCR0A |= ( 1U << WGM01 );
 
-    /* Comparar en 249 para obtener 1 ms */
+    // Comparar en 249 para obtener 1 ms  
     OCR0A = 249U;
 
-    /* Habilitar interrupcion por comparacion */
+    // Habilitar interrupcion por comparacion  
     TIMSK0 |= ( 1U << OCIE0A );
 
-    /* Prescaler de 64: CS01 + CS00 */
+    // Prescaler de 64: CS01 + CS00  
     TCCR0B |= ( 1U << CS01 ) | ( 1U << CS00 );
 }
 
@@ -436,7 +450,9 @@ inicializarTimer0( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 static uint32_t
 obtenerMillis( void )
@@ -465,7 +481,9 @@ obtenerMillis( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 static void
 retardoMicrosegundos( uint16_t tiempoUs )
@@ -492,7 +510,9 @@ retardoMicrosegundos( uint16_t tiempoUs )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 static uint8_t
 leerBotonesCrudo( void )
@@ -533,7 +553,9 @@ leerBotonesCrudo( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 static void
 actualizarDebounce( uint32_t ahora )
@@ -564,7 +586,9 @@ actualizarDebounce( uint32_t ahora )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 static void
 shiftOutRegistro( uint8_t valor )
@@ -603,7 +627,9 @@ shiftOutRegistro( uint8_t valor )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 static void
 enviarDatos( uint8_t col1,
@@ -639,7 +665,9 @@ enviarDatos( uint8_t col1,
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 static void
 obtenerBytesDeFila( uint8_t filaFisica,
@@ -678,7 +706,9 @@ obtenerBytesDeFila( uint8_t filaFisica,
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Juan Andrés Sanchez
+*   ABR 16/26      Juan Sanchez
+*   ABR 17/26      Sofia Vega
+*   ABR 18/26      Andres Trujillo
 *******************************************************************************/
 static void
 apagarMatrices( void )

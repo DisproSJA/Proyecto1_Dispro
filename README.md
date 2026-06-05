@@ -4,11 +4,13 @@ Proyecto de **Diseño de Sistemas con Procesador (DISPRO)** que consiste en desa
 
 ## Integrantes
 
+
 | Nombre                 |
-|------------------------|
+| ---------------------- |
 | Sofia Vega             |
 | Juan Sanchez           |
 | Andrés Felipe Trujillo |
+
 
 ## Descripción del Proyecto
 
@@ -56,16 +58,19 @@ Proyecto1_Dispro/
 ## Hitos del Proyecto
 
 ### Hito 1 — Control de Matriz y Driver 74HC595
+
 - Mostrar una imagen estática (corazón y cara feliz) en las dos matrices LED 16×8.
 - Mostrar la misma figura en consola con caracteres ASCII.
 - Implementar el driver de bajo nivel para el 74HC595.
 
 ### Hito 2 — Animación y Gestión de Entradas
+
 - Animación de una pieza T con caída automática y controles de teclado (A/D/W/S/Q).
 - Lectura de 4 teclas en el sistema embebido directamente desde los registros PINx.
 - Uso de Timer para la base de tiempo de la animación y debounce en botones.
 
 ### Hito 3 — Sistema Tetris Completo (SistemaFinal)
+
 - Arquitectura modular con capa de abstracción de hardware (HAL) que permite compilar el mismo código fuente para PC y ATmega328P.
 - Lógica completa del Tetris: generación aleatoria de 7 piezas, colisiones, rotaciones, eliminación de líneas, puntaje y niveles progresivos.
 - Código unificado con directivas `#ifdef PLATFORM_AVR` y `#ifdef PLATFORM_PC` en `hal_display.h`.
@@ -75,9 +80,10 @@ Proyecto1_Dispro/
 
 ## Diagrama de Conexiones del ATmega328P
 
-![Circuito base del ATmega328P](Hito3/SistemaFinal/diagrama_conexiones.png)
+Circuito base del ATmega328P
 
 El circuito base incluye:
+
 - **Pin 1 (RESET):** Resistencia de 10kΩ a +5V (pull-up).
 - **Pin 7 (VCC)** y **Pin 20 (AVCC):** Conectados a +5V.
 - **Pin 8 (GND)** y **Pin 22 (GND):** Conectados a GND.
@@ -86,22 +92,26 @@ El circuito base incluye:
 
 ### Botones
 
-| Pin ATmega328P | Puerto | Función       |
-|----------------|--------|---------------|
-| Pin 4          | PD2    | Botón ROTAR   |
+
+| Pin ATmega328P | Puerto | Función         |
+| -------------- | ------ | --------------- |
+| Pin 4          | PD2    | Botón ROTAR     |
 | Pin 5          | PD3    | Botón IZQUIERDA |
-| Pin 6          | PD4    | Botón BAJAR   |
-| Pin 11         | PD5    | Botón DERECHA |
+| Pin 6          | PD4    | Botón BAJAR     |
+| Pin 11         | PD5    | Botón DERECHA   |
+
 
 ### 74HC595 — Control de Matrices LED
 
+
 | Pin ATmega328P | Puerto | Señal 74HC595         |
-|----------------|--------|-----------------------|
+| -------------- | ------ | --------------------- |
 | Pin 12         | PD6    | DATA (SER / DS)       |
 | Pin 13         | PD7    | RESET (SRCLR / MR)    |
 | Pin 14         | PB0    | CLOCK (SRCLK / SH_CP) |
 | Pin 15         | PB1    | LATCH (RCLK / ST_CP)  |
 | Pin 16         | PB2    | OE (Output Enable)    |
+
 
 ## Tecnologías y Herramientas
 
@@ -115,11 +125,13 @@ El circuito base incluye:
 ## Cómo Compilar
 
 ### Versión PC (Hito 1)
+
 ```bash
 gcc CodigoHito1PC.c -o Tetris1.exe
 ```
 
 ### Versión PC (Hito 2)
+
 ```bash
 gcc CodifoHito2PC.c -o Tetris2.exe
 ```
@@ -127,17 +139,20 @@ gcc CodifoHito2PC.c -o Tetris2.exe
 ### Versión PC (Hito 3 — SistemaFinal)
 
 Asegurarse de que en `hal_display.h` esté activo `PLATFORM_PC`:
+
 ```c
 #define PLATFORM_PC
 //#define PLATFORM_AVR
 ```
 
 Compilar desde la carpeta `Hito3/SistemaFinal/`:
+
 ```bash
 gcc -o tetris.exe main.c tetris_logic.c driver_pc.c
 ```
 
 Ejecutar:
+
 ```bash
 ./tetris.exe
 ```
@@ -145,38 +160,45 @@ Ejecutar:
 ### Versión Embebida (Hito 3 — SistemaFinal para ATmega328P)
 
 Asegurarse de que en `hal_display.h` esté activo `PLATFORM_AVR`:
+
 ```c
 //#define PLATFORM_PC
 #define PLATFORM_AVR
 ```
 
 **1. Compilar y generar el archivo .hex** desde la carpeta `Hito3/SistemaFinal/`:
+
 ```bash
 avr-gcc -mmcu=atmega328p -DF_CPU=16000000UL -Os -o tetris.elf main.c tetris_logic.c driver_avr.c
 avr-objcopy -O ihex tetris.elf tetris.hex
 ```
 
 **2. Configurar los fusibles** del ATmega328P (solo se hace una vez):
+
 ```bash
 avrdude -c stk500v1 -p m328p -P <PUERTO> -b 19200 -U lfuse:w:0xFF:m -U hfuse:w:0xDE:m -U efuse:w:0xFD:m
 ```
 
 **3. Cargar el programa** en el microcontrolador:
+
 ```bash
 avrdude -c stk500v1 -p m328p -P <PUERTO> -b 19200 -U flash:w:tetris.hex
 ```
 
 > **Nota:** Reemplazar `<PUERTO>` por el puerto serial correspondiente.
-> - **Mac:** `/dev/cu.usbmodemXXXXX` (buscar con `ls /dev/cu.usbmodem*`)
+>
+> - **Mac:** `/dev/cu.usbmodemXXXXX` (buscar con `ls /dev/cu.usbmodem`*)
 > - **Windows:** `COMX` (verificar en el Administrador de Dispositivos)
 >
 > El Arduino UNO debe tener cargado el sketch **ArduinoISP** y estar conectado al ATmega328P según la siguiente tabla:
 >
-> | Arduino UNO | ATmega328P (DIP-28)       |
-> |-------------|---------------------------|
-> | Pin 13 (SCK)  | Pin 19 (PB5 / SCK)     |
-> | Pin 12 (MISO) | Pin 18 (PB4 / MISO)    |
-> | Pin 11 (MOSI) | Pin 17 (PB3 / MOSI)    |
-> | Pin 10         | Pin 1  (RESET)          |
-> | 5V             | Pin 7 (VCC) y Pin 20 (AVCC) |
-> | GND            | Pin 8 (GND) y Pin 22 (GND)  |
+>
+> | Arduino UNO   | ATmega328P (DIP-28)         |
+> | ------------- | --------------------------- |
+> | Pin 13 (SCK)  | Pin 19 (PB5 / SCK)          |
+> | Pin 12 (MISO) | Pin 18 (PB4 / MISO)         |
+> | Pin 11 (MOSI) | Pin 17 (PB3 / MOSI)         |
+> | Pin 10        | Pin 1 (RESET)               |
+> | 5V            | Pin 7 (VCC) y Pin 20 (AVCC) |
+> | GND           | Pin 8 (GND) y Pin 22 (GND)  |
+>

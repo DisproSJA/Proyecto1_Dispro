@@ -1,9 +1,9 @@
 /******************************************************************************
  *   Archivo:     main.c
  *   Proyecto:    Tetris Multi-Plataforma - Hito Final
- *   Materia:     Diseno de Sistemas con Procesador (DISPRO)
+ *   Materia:     Diseño de Sistemas con Procesador
  *
- *   Descripcion: Punto de entrada del programa. Contiene el flujo principal
+ *   Descripción: Punto de entrada del programa. Contiene el flujo principal
  *                del juego: inicializacion de hardware, bucle de juego con
  *                procesamiento de entrada, caida automatica con velocidad
  *                progresiva segun el nivel, y dibujado de pantalla.
@@ -28,10 +28,10 @@
  * CONSTANTES DE CONFIGURACION DEL BUCLE DE JUEGO
  ******************************************************************************/
 
-#define RETARDO_CICLO_MS     15     /* Pausa entre iteraciones del bucle     */
-#define CAIDA_MS_INICIAL     800    /* Intervalo de caida al inicio (ms)     */
-#define REDUCCION_NIVEL_MS   50     /* Reduccion de intervalo por nivel (ms) */
-#define CAIDA_MS_MINIMA      100    /* Velocidad maxima de caida (ms)        */
+#define RETARDO_CICLO_MS     15     // Pausa entre iteraciones del bucle     
+#define CAIDA_MS_INICIAL     800    // Intervalo de caida al inicio (ms)     
+#define REDUCCION_NIVEL_MS   50     // Reduccion de intervalo por nivel (ms)     
+#define CAIDA_MS_MINIMA      100    // Velocidad maxima de caida (ms)        
 
 /******************************************************************************
  * VARIABLES GLOBALES DEL PROGRAMA
@@ -95,14 +95,14 @@ int main( void )
         actualizarCaidaAutomatica();
 
 #ifdef PLATFORM_AVR
-        /* En AVR, si es game over se muestran los digitos en las matrices */
+        // En AVR, si es game over se muestran los digitos en las matrices
         if( g_juego.gameOver ) {
             tetris_dibujarPantallaGameOver( &g_juego, g_framebuffer );
         } else {
             tetris_dibujarEstadoEnFramebuffer( &g_juego, g_framebuffer );
         }
 #else
-        /* En PC, el panel lateral ya muestra la info de game over */
+        // En PC, el panel lateral ya muestra la info de game over
         tetris_dibujarEstadoEnFramebuffer( &g_juego, g_framebuffer );
 #endif
 
@@ -127,6 +127,8 @@ int main( void )
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
 *   ABR 02/26      Andres Felipe Trujillo
+*   ABR 02/26      Sofia Vega
+*   ABR 02/26      Juan Sanchez
 *******************************************************************************/
 static void salidaPrograma( void )
 {
@@ -150,6 +152,8 @@ static void salidaPrograma( void )
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
 *   ABR 02/26      Andres Felipe Trujillo
+*   ABR 02/26      Sofia Vega
+*   ABR 02/26      Juan Sanchez
 *******************************************************************************/
 static long calcularIntervaloCaida( void )
 {
@@ -181,6 +185,8 @@ static long calcularIntervaloCaida( void )
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
 *   ABR 02/26      Andres Felipe Trujillo
+*   ABR 02/26      Sofia Vega
+*   ABR 02/26      Juan Sanchez
 *******************************************************************************/
 static void procesarEntrada( void )
 {
@@ -188,7 +194,7 @@ static void procesarEntrada( void )
 
     entrada = hal_leerEntrada();
 
-    /* Si el juego termino, solo se permite reiniciar o salir */
+    // Si el juego termino, solo se permite reiniciar o salir
     if( g_juego.gameOver ) {
         if( entrada == ENTRADA_REINICIAR ) {
             srand( (unsigned int)hal_obtenerTiempoMs() );
@@ -203,7 +209,7 @@ static void procesarEntrada( void )
         return;
     }
 
-    /* Acciones durante el juego normal */
+    // Acciones durante el juego normal
     switch( entrada ) {
         case ENTRADA_IZQUIERDA:
             tetris_intentarMover( &g_juego, -1, 0 );
@@ -246,6 +252,8 @@ static void procesarEntrada( void )
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
 *   ABR 02/26      Andres Felipe Trujillo
+*   ABR 02/26      Sofia Vega
+*   ABR 02/26      Juan Sanchez
 *******************************************************************************/
 static void actualizarCaidaAutomatica( void )
 {

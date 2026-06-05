@@ -1,12 +1,12 @@
 /******************************************************************************
  *   Archivo:     tetris_logic.c
  *   Proyecto:    Tetris Multi-Plataforma - Hito Final
- *   Materia:     Diseno de Sistemas con Procesador (DISPRO)
+ *   Materia:     Diseño de Sistemas con Procesador
  *
- *   Descripcion: Implementacion de toda la logica del Tetris.
- *                Incluye: definicion de los 7 tetrominos, deteccion de
+ *   Descripción: Implementación de toda la lógica del Tetris.
+ *                Incluye: definición de los 7 tetrominos, detección de
  *                colisiones, movimiento, rotacion, fijado de piezas,
- *                eliminacion de lineas completas y sistema de puntuacion.
+ *                eliminación de lineas completas y sistema de puntuación.
  *                Este archivo NO tiene dependencias de hardware.
  *
  *   Integrantes:
@@ -39,7 +39,7 @@ static const Tetromino TETROMINOS[NUM_TETROMINOS] = {
 };
 
 /******************************************************************************
- * PROTOTIPOS DE FUNCIONES INTERNAS (STATIC)
+ * PROTOTIPOS DE FUNCIONES INTERNAS
  ******************************************************************************/
 
 static void limpiarMatriz( uint8_t matriz[ALTO_TABLERO][ANCHO_TABLERO] );
@@ -74,8 +74,9 @@ static void actualizarPuntajePorPiezas( EstadoJuego *juego );
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 void tetris_inicializarJuego( EstadoJuego *juego )
 {
@@ -102,8 +103,9 @@ void tetris_inicializarJuego( EstadoJuego *juego )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 void tetris_reiniciarTablero( EstadoJuego *juego )
 {
@@ -130,8 +132,9 @@ void tetris_reiniciarTablero( EstadoJuego *juego )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 void tetris_generarPiezaInicial( EstadoJuego *juego )
 {
@@ -158,8 +161,9 @@ void tetris_generarPiezaInicial( EstadoJuego *juego )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 bool tetris_celdaOcupadaEnRotacion( const Tetromino *pieza,
                                uint8_t rot,
@@ -185,8 +189,9 @@ bool tetris_celdaOcupadaEnRotacion( const Tetromino *pieza,
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 bool tetris_puedeUbicarse( const EstadoJuego *juego,
                       const Tetromino *pieza,
@@ -240,8 +245,9 @@ bool tetris_puedeUbicarse( const EstadoJuego *juego,
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 bool tetris_intentarMover( EstadoJuego *juego, int8_t dx, int8_t dy )
 {
@@ -276,8 +282,9 @@ bool tetris_intentarMover( EstadoJuego *juego, int8_t dx, int8_t dy )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega   
 *******************************************************************************/
 bool tetris_intentarRotar( EstadoJuego *juego )
 {
@@ -311,8 +318,9 @@ bool tetris_intentarRotar( EstadoJuego *juego )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 void tetris_fijarPiezaActiva( EstadoJuego *juego )
 {
@@ -360,7 +368,8 @@ void tetris_fijarPiezaActiva( EstadoJuego *juego )
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
 *   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 bool tetris_generarNuevaPieza( EstadoJuego *juego )
 {
@@ -399,8 +408,9 @@ bool tetris_generarNuevaPieza( EstadoJuego *juego )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 bool tetris_bajarOFijar( EstadoJuego *juego )
 {
@@ -445,8 +455,9 @@ bool tetris_bajarOFijar( EstadoJuego *juego )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 uint8_t tetris_eliminarLineasCompletas( EstadoJuego *juego )
 {
@@ -478,8 +489,9 @@ uint8_t tetris_eliminarLineasCompletas( EstadoJuego *juego )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 bool tetris_hayBloquesEnFilaSuperior( const EstadoJuego *juego )
 {
@@ -508,8 +520,9 @@ bool tetris_hayBloquesEnFilaSuperior( const EstadoJuego *juego )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 void tetris_dibujarEstadoEnFramebuffer( const EstadoJuego *juego,
                                    uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO] )
@@ -538,7 +551,8 @@ void tetris_dibujarEstadoEnFramebuffer( const EstadoJuego *juego,
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
 *   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 static void limpiarMatriz( uint8_t matriz[ALTO_TABLERO][ANCHO_TABLERO] )
 {
@@ -566,7 +580,8 @@ static void limpiarMatriz( uint8_t matriz[ALTO_TABLERO][ANCHO_TABLERO] )
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
 *   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 static void dibujarTableroFijo( const EstadoJuego *juego,
                     uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO] )
@@ -644,7 +659,8 @@ static void dibujarPiezaActiva( const EstadoJuego *juego,
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
 *   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 static bool filaCompleta( const EstadoJuego *juego, uint8_t fila )
 {
@@ -673,8 +689,9 @@ static bool filaCompleta( const EstadoJuego *juego, uint8_t fila )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 static void bajarFilasSuperiores( EstadoJuego *juego, uint8_t filaEliminada )
 {
@@ -707,7 +724,8 @@ static void bajarFilasSuperiores( EstadoJuego *juego, uint8_t filaEliminada )
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
 *   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Juan Sanchez
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 static void actualizarPuntajePorPiezas( EstadoJuego *juego )
 {
@@ -760,7 +778,9 @@ static void dibujarNumeroDosDigitos(
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 void tetris_dibujarPantallaGameOver(
     const EstadoJuego *juego,
@@ -799,7 +819,9 @@ void tetris_dibujarPantallaGameOver(
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 static void dibujarNumeroDosDigitos(
     uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO],
@@ -828,7 +850,9 @@ static void dibujarNumeroDosDigitos(
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 05/26      Andres Felipe Trujillo
+*   ABR 07/26      Juan Sanchez
+*   ABR 08/26      Sofia Vega
 *******************************************************************************/
 static void dibujarDigito3x5(
     uint8_t framebuffer[ALTO_TABLERO][ANCHO_TABLERO],

@@ -34,14 +34,14 @@
 static HANDLE g_hConsola;
 static CONSOLE_CURSOR_INFO g_cursorOriginal;
 
-/* Nombres de los integrantes del grupo */
+// Nombres de los integrantes del grupo  
 static const char *g_integrantes[] = {
     "Sofia Vega",
     "Juan Sanchez",
     "Andres Trujillo"
 };
 
-/* Nombres de los 7 tetrominos en el mismo orden que TETROMINOS[] */
+// Nombres de los 7 tetrominos en el mismo orden que TETROMINOS[]  
 static const char *g_nombresPiezas[] = {
     "T", "O", "I", "L", "J", "S", "Z"
 };
@@ -75,7 +75,9 @@ static void imprimirPanelGameOver( const EstadoJuego *juego, int fila );
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 12/26      Andres Felipe Trujillo
+*   ABR 15/26      Sofia Vega
+*   ABR 16/26      Juan Sanchez
 *******************************************************************************/
 int hal_inicializarHardware( void )
 {
@@ -114,7 +116,9 @@ int hal_inicializarHardware( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 12/26      Andres Felipe Trujillo
+*   ABR 15/26      Sofia Vega
+*   ABR 16/26      Juan Sanchez
 *******************************************************************************/
 void hal_finalizarHardware( void )
 {
@@ -136,7 +140,9 @@ void hal_finalizarHardware( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 12/26      Andres Felipe Trujillo
+*   ABR 15/26      Sofia Vega
+*   ABR 16/26      Juan Sanchez
 *******************************************************************************/
 int hal_leerEntrada( void )
 {
@@ -186,7 +192,9 @@ int hal_leerEntrada( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 12/26      Andres Felipe Trujillo
+*   ABR 15/26      Sofia Vega
+*   ABR 16/26      Juan Sanchez
 *******************************************************************************/
 long hal_obtenerTiempoMs( void )
 {
@@ -206,7 +214,9 @@ long hal_obtenerTiempoMs( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 12/26      Andres Felipe Trujillo
+*   ABR 15/26      Sofia Vega
+*   ABR 16/26      Juan Sanchez
 *******************************************************************************/
 void hal_retardo( int milisegundos )
 {
@@ -241,13 +251,13 @@ void hal_dibujarJuego( const EstadoJuego *juego,
 
     limpiarPantalla();
 
-    /* Encabezado: titulo del juego y panel superior */
+    // Encabezado: titulo del juego y panel superior  
     printf( "\n" );
     printf( "<!========================!>   +--------------------+\n" );
     printf( "<!  T  E  T  R  I  S     !>   |  HITO FINAL - PC   |\n" );
     printf( "<!========================!>   +--------------------+\n" );
 
-    /* Tablero + panel lateral (16 filas) */
+    // Tablero + panel lateral (16 filas)  
     for( f = 0; f < ALTO_TABLERO; f++ ) {
         printf( "<!" );
 
@@ -264,10 +274,10 @@ void hal_dibujarJuego( const EstadoJuego *juego,
         }
     }
 
-    /* Borde inferior del tablero */
+    // Borde inferior del tablero  
     printf( "<!========================!>   +--------------------+\n" );
 
-    /* Instrucciones segun el estado del juego */
+    // Instrucciones segun el estado del juego  
     if( juego->gameOver ) {
         printf( "\n  Presione R para reiniciar o Q para salir.\n" );
     } else {
@@ -294,7 +304,9 @@ void hal_dibujarJuego( const EstadoJuego *juego,
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 12/26      Andres Felipe Trujillo
+*   ABR 15/26      Sofia Vega
+*   ABR 16/26      Juan Sanchez
 *******************************************************************************/
 static const char * obtenerNombrePieza( uint8_t tipo )
 {
@@ -319,7 +331,9 @@ static const char * obtenerNombrePieza( uint8_t tipo )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
+*   ABR 12/26      Andres Felipe Trujillo
+*   ABR 15/26      Sofia Vega
+*   ABR 16/26      Juan Sanchez
 *******************************************************************************/
 static void limpiarPantalla( void )
 {
@@ -341,9 +355,9 @@ static void limpiarPantalla( void )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Sofia Vega
-*   ABR 02/26      Juan Sanchez
+*   ABR 12/26      Andres Felipe Trujillo
+*   ABR 15/26      Sofia Vega
+*   ABR 16/26      Juan Sanchez
 *******************************************************************************/
 static void imprimirPanelJuego( const EstadoJuego *juego, int fila )
 {
@@ -352,13 +366,13 @@ static void imprimirPanelJuego( const EstadoJuego *juego, int fila )
 
     nivel = (int)( juego->lineasCompletas / LINEAS_POR_NIVEL );
 
-    /* Filas separadoras con bordes */
+    // Filas separadoras con bordes  
     if( fila == 4 || fila == 11 ) {
         printf( "+--------------------+\n" );
         return;
     }
 
-    /* Filas con contenido dinamico o estatico */
+    // Filas con contenido dinamico o estatico  
     switch( fila ) {
         case 0:
             sprintf( buf, "PIEZA:  %s",
@@ -427,9 +441,9 @@ static void imprimirPanelJuego( const EstadoJuego *juego, int fila )
 *
 *   FECHA          RESPONSABLE
 *   -----------------------------------------------------------------------
-*   ABR 02/26      Andres Felipe Trujillo
-*   ABR 02/26      Sofia Vega
-*   ABR 02/26      Juan Sanchez
+*   ABR 12/26      Andres Felipe Trujillo
+*   ABR 15/26      Sofia Vega
+*   ABR 16/26      Juan Sanchez
 *******************************************************************************/
 static void imprimirPanelGameOver( const EstadoJuego *juego, int fila )
 {
@@ -438,7 +452,7 @@ static void imprimirPanelGameOver( const EstadoJuego *juego, int fila )
 
     nivel = (int)( juego->lineasCompletas / LINEAS_POR_NIVEL );
 
-    /* Filas separadoras con bordes */
+    // Filas separadoras con bordes  
     if( fila == 1 || fila == 6 || fila == 11 ) {
         printf( "+--------------------+\n" );
         return;

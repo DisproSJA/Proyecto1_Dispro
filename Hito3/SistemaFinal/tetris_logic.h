@@ -1,11 +1,10 @@
 /******************************************************************************
  *   Archivo:     tetris_logic.h
  *   Proyecto:    Tetris Multi-Plataforma - Hito Final
- *   Materia:     Diseno de Sistemas con Procesador (DISPRO)
+ *   Materia:     Diseño de Sistemas con Procesador
  *
  *   Descripcion: Definiciones de tipos de datos, constantes del tablero y
  *                prototipos de todas las funciones de logica pura del Tetris.
- *                Este archivo NO depende de ninguna plataforma de hardware.
  *
  *   Integrantes:
  *      - Sofia Vega
@@ -38,12 +37,12 @@
  * TIPOS DE DATOS DEL JUEGO
  ******************************************************************************/
 
-/* Cada tetromino tiene 4 rotaciones codificadas en 16 bits (matriz 4x4) */
+// Cada tetromino tiene 4 rotaciones codificadas en 16 bits (matriz 4x4)
 typedef struct {
     uint16_t rotaciones[NUM_ROTACIONES];
 } Tetromino;
 
-/* Pieza que esta cayendo actualmente en el tablero */
+// Pieza que esta cayendo actualmente en el tablero
 typedef struct {
     const Tetromino *definicion;
     int8_t x;
@@ -52,12 +51,12 @@ typedef struct {
     uint8_t tipo;
 } PiezaActiva;
 
-/* Tablero de juego con las celdas fijas (bloques ya colocados) */
+// Tablero de juego con las celdas fijas (bloques ya colocados)
 typedef struct {
     uint8_t celdas[ALTO_TABLERO][ANCHO_TABLERO];
 } Tablero;
 
-/* Estado completo del juego en un momento dado */
+// Estado completo del juego en un momento dado
 typedef struct {
     Tablero tableroFijo;
     PiezaActiva piezaActiva;
@@ -68,7 +67,7 @@ typedef struct {
 } EstadoJuego;
 
 /******************************************************************************
- * PROTOTIPOS DE FUNCIONES DE LOGICA
+ * PROTOTIPOS DE FUNCIONES DE LÓGICA
  ******************************************************************************/
 
 void tetris_inicializarJuego( EstadoJuego *juego );
